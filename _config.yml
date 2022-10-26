@@ -1,5 +1,4 @@
 theme: jekyll-theme-cayman
-title: Standard.Licensing
-description: Easy-to-use licensing library for .NET Framework, Mono, .NET Core, and Xamarin products
+title: NetLicensing
+description: Easy-to-use licensing library for .NET 6+
 show_downloads: true
-google_analytics: UA-90418854-6
