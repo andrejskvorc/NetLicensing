@@ -1,5 +1,31 @@
-﻿using NetLicensing.Security.BouncyCastle;
-using Org.BouncyCastle.Security;
+﻿//
+// Copyright © 2012 - 2013 Nauck IT KG     http://www.nauck-it.de
+//
+// Author:
+//  Daniel Nauck        <d.nauck(at)nauck-it.de>
+// Modified and adapted in 2022 by:
+//  Andrej Skvorc       <andrej@skvorc.eu>
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+// 
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+using NetLicensing.Security.BouncyCastle;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -14,7 +40,7 @@ namespace NetLicensing
     public class License
     {
         private readonly XElement xmlData;
-        private readonly string signatureAlgorithm = "";// X9ObjectIdentifiers.ECDsaWithSha512.Id;
+        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="License"/> class.
@@ -165,64 +191,46 @@ namespace NetLicensing
         }
 
         /// <summary>
+        /// Determines whether the <see cref="License.Signature"/> property verifies for the specified key.
+        /// </summary>
+        /// <param name="publicKey">The public key in xml string format to verify the <see cref="License.Signature"/>.</param>
+        /// <param name="library">Sets Crypto library to use for verification. Default Bouncy Castle.</param>
+        /// <returns>true if the <see cref="License.Signature"/> verifies; otherwise false.</returns>
+        public bool VerifySignature(string publicKey, CryptoLibrary library = CryptoLibrary.BouncyCastle)
+        {
+            bool returnValue = false;
+
+            switch (library)
+            {
+                case CryptoLibrary.BouncyCastle:
+                    returnValue = BouncyCastleSignature.VerifySignature(publicKey, xmlData);
+                    break;
+                default:
+                    break;
+
+            }
+
+            return returnValue;
+        }
+
+        /// <summary>
         /// Compute a signature and sign this <see cref="License"/> with the provided key.
         /// </summary>
         /// <param name="privateKey">The private key in xml string format to compute the signature.</param>
         /// <param name="passPhrase">The pass phrase to decrypt the private key.</param>
-        public void Sign(string privateKey, string passPhrase, CryptoLibrary library = CryptoLibrary.BouncyCastle )
+        /// <param name="library">Sets Crypto library to use for signing. Default Bouncy Castle.</param>
+        public void Sign(string privateKey, string passPhrase, CryptoLibrary library = CryptoLibrary.BouncyCastle)
         {
-            var signTag = xmlData.Element("Signature") ?? new XElement("Signature");
-
-            try
+            switch (library)
             {
-                if (signTag.Parent != null)
-                    signTag.Remove();
-
-                var privKey = KeyFactory.FromEncryptedPrivateKeyString(privateKey, passPhrase);
-
-                var documentToSign = Encoding.UTF8.GetBytes(xmlData.ToString(SaveOptions.DisableFormatting));
-                var signer = SignerUtilities.GetSigner(signatureAlgorithm);
-                signer.Init(true, privKey);
-                signer.BlockUpdate(documentToSign, 0, documentToSign.Length);
-                var signature = signer.GenerateSignature();
-                signTag.Value = Convert.ToBase64String(signature);
-            }
-            finally
-            {
-                xmlData.Add(signTag);
+                case CryptoLibrary.BouncyCastle:
+                    BouncyCastleSignature.Sign(privateKey, passPhrase, xmlData);
+                    break;
+                default:
+                    break;
             }
         }
 
-        /// <summary>
-        /// Determines whether the <see cref="License.Signature"/> property verifies for the specified key.
-        /// </summary>
-        /// <param name="publicKey">The public key in xml string format to verify the <see cref="License.Signature"/>.</param>
-        /// <returns>true if the <see cref="License.Signature"/> verifies; otherwise false.</returns>
-        public bool VerifySignature(string publicKey)
-        {
-            var signTag = xmlData.Element("Signature");
-
-            if (signTag == null)
-                return false;
-
-            try
-            {
-                signTag.Remove();
-
-                var pubKey = KeyFactory.FromPublicKeyString(publicKey);
-
-                var documentToSign = Encoding.UTF8.GetBytes(xmlData.ToString(SaveOptions.DisableFormatting));
-                var signer = SignerUtilities.GetSigner(signatureAlgorithm);
-                signer.Init(false, pubKey);
-                signer.BlockUpdate(documentToSign, 0, documentToSign.Length);
-
-                return signer.VerifySignature(Convert.FromBase64String(signTag.Value));
-            }
-            finally
-            {
-                xmlData.Add(signTag);
-            }
-        }
 
         /// <summary>
         /// Create a new <see cref="License"/> using the <see cref="ILicenseBuilder"/>

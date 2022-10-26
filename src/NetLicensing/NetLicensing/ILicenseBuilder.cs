@@ -3,6 +3,8 @@
 //
 // Author:
 //  Daniel Nauck        <d.nauck(at)nauck-it.de>
+// Modified and adapted in 2022 by:
+//  Andrej Skvorc       <andrej@skvorc.eu>
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -120,7 +122,8 @@ namespace NetLicensing
         /// </summary>
         /// <param name="privateKey">The private encryption key for the signature.</param>
         /// <param name="passPhrase">The pass phrase to decrypt the private key.</param>
+        /// <param name="library">Sets Crypto library to use for signing. Default Bouncy Castle.</param>
         /// <returns>The signed <see cref="License"/>.</returns>
-        License CreateAndSignWithPrivateKey(string privateKey, string passPhrase);
+        License CreateAndSignWithPrivateKey(string privateKey, string passPhrase, CryptoLibrary library = CryptoLibrary.BouncyCastle);
     }
 }
