@@ -6,11 +6,17 @@
 
 ## About
 
-Easy-to-use licensing library for .NET Framework, Mono, .NET Core, and Xamarin products.
+Easy-to-use licensing library for .NET 6+
 
-This is project is derived from [Portable.Licensing](https://github.com/dnauck/Portable.Licensing/) library. The purpose of this fork is to add support for more .NET platforms, especially .NET Standard and .NET Core.
+This is project is derived from [Portable.Licensing](https://github.com/dnauck/Portable.Licensing/) And Standard.Licensing library. The purpose of this fork is to add support .Net 6+ going forward, add more Cryptography libraries for users to chose from for usage, and added Bouncy Castle as nuget package for easier maintenance and updates.
 
-There is also a plan to decouple from `Bouncy Castle` library and use [System.Security.Cryptography.Cng](https://www.nuget.org/packages/System.Security.Cryptography.Cng/) for modern .NET platforms.
+For now plan is to rework, so users can choose to you Bouncy Castle or [System.Security.Cryptography.Cng](https://www.nuget.org/packages/System.Security.Cryptography.Cng/), upgrade everything to Net 6, Visual Studio 2022. 
+
+Also, idea is to add small License management app, so NetLicensing can be used out of the box.
+
+Finall goal is to have Multiplatform library with multiplatform tool for issuing licences.
+
+At this moment, this is not recommended for production usage, as there will be breaking changes before first release. This and other supporting documents will change as this library is changed.
 
 ![](https://1.bp.blogspot.com/-yv8fTM-7QdQ/WoghR2w1KJI/AAAAAAAAC28/0BGyFsS2nGoN9t2QnoXgMbiWVUwUipH1gCLcBGAs/s1600/standard-licensing-logo.png)
 
