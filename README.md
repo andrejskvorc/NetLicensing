@@ -6,11 +6,11 @@
 
 ## About
 
-Easy-to-use licensing library for .NET 6+
+Easy-to-use licensing library for .NET 8
 
 This is project is derived from [Portable.Licensing](https://github.com/dnauck/Portable.Licensing/) And Standard.Licensing library. The purpose of this fork is to add support .Net 6+ going forward, add more Cryptography libraries for users to chose from, and added Bouncy Castle as nuget package for easier maintenance and updates.
 
-For now plan is to rework, so users can choose to you Bouncy Castle or [System.Security.Cryptography.Cng](https://www.nuget.org/packages/System.Security.Cryptography.Cng/), upgrade everything to Net 6, Visual Studio 2022. 
+For now plan is to rework, so users can choose to you Bouncy Castle or [System.Security.Cryptography.Cng](https://www.nuget.org/packages/System.Security.Cryptography.Cng/), upgrade everything to Net 8, Visual Studio 2022. 
 
 Also, idea is to add small License management app, so NetLicensing can be used out of the box.
 
